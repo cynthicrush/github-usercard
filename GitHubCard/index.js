@@ -1,8 +1,20 @@
+import axios from 'axios';
 /*
   STEP 1: using axios, send a GET request to the following URL
     (replacing the placeholder with your Github name):
     https://api.github.com/users/<your name>
 */
+axios.get('https://api.github.com/users/cynthicrush') 
+.then(res => {
+  const cards = document.querySelector('.cards');
+  cards.appendChild(userCard(res.data));
+})
+.catch(err => {
+  debugger;
+  console.log(err);
+})
+
+
 
 /*
   STEP 2: Inspect and study the data coming back, this is YOUR
@@ -28,7 +40,21 @@
     user, and adding that card to the DOM.
 */
 
-const followersArray = [];
+const followersArray = ['tetondan', 'dustinmyers', 'justsml', 'luishrd', 'bigknell'];
+
+followersArray.forEach(person => {
+  axios.get(`https://api.github.com/users/${person}`) 
+  .then(res => {
+    const cards = document.querySelector('.cards');
+    cards.appendChild(userCard(res.data));
+  })
+  .catch(err => {
+    debugger;
+    console.log(err);
+  })
+})
+
+
 
 /*
   STEP 3: Create a function that accepts a single object as its only argument.
@@ -49,6 +75,53 @@ const followersArray = [];
       </div>
     </div>
 */
+function userCard(userObj) {
+  const {avatar_url, name, login, location, html_url, followers, following, bio } = userObj;
+
+  const userCard = document.createElement('div');
+  const userImg = document.createElement('img');
+  const cardInfo = document.createElement('div');
+  const profileName = document.createElement('h3');
+  const profileUserName = document.createElement('p');
+  const profileLocation = document.createElement('p');
+  const profile = document.createElement('p');
+  const a = document.createElement('a');
+  const profileFollowers = document.createElement('p');
+  const profileFollowing = document.createElement('p');
+  const profileBio = document.createElement('p');
+
+  userCard.appendChild(userImg)
+  userCard.appendChild(cardInfo);
+  cardInfo.appendChild(profileName);
+  cardInfo.appendChild(profileUserName);
+  cardInfo.appendChild(profileLocation);
+  cardInfo.appendChild(profile);
+  cardInfo.appendChild(a);
+  cardInfo.appendChild(profileFollowers);
+  cardInfo.appendChild(profileFollowing);
+  cardInfo.appendChild(profileBio);
+
+  userCard.className = 'card';
+  cardInfo.className = 'card-info';
+  profileName.className = 'name';
+  profileUserName.className = 'username';
+  
+  userImg.src=avatar_url;
+  a.setAttribute("href", html_url);
+  a.innerHTML = `&nbsp;&nbsp;&nbsp;&nbsp; ${html_url}`;
+  
+
+  profileName.textContent=name;
+  profileUserName.textContent=login;
+  profileLocation.textContent=`Location: ${location}`;
+  profile.textContent='Profile:';
+  profileFollowers.textContent=`Followers: ${followers}`;
+  profileFollowing.textContent=`Following: ${following}`;
+  profileBio.textContent=`Bio: ${bio}`;
+
+  console.log('userCard', userCard);
+  return userCard;
+}
 
 /*
   List of LS Instructors Github username's:
